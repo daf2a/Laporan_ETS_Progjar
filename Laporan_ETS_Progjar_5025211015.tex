@@ -119,7 +119,26 @@ ab -n 1000 -c [TINGKAT_KONKURENSI] http://[ALAMAT_IP_SERVER]:8889/
 \end{verbatim}
 
 \subsection{Modifikasi Kode Sumber}
-% Jelaskan bagaimana Anda mengubah kode yang disediakan untuk mengimplementasikan konfigurasi server web yang berbeda.
+
+Pada kode multiprocessing, ditambahkan bagian untuk mengimplementasikan secure connection pada file yang baru. Berikut adalah modifikasi yang dilakukan dengan menambahkan:
+
+\begin{verbatim}
+def __init__(self, hostname='testing.net'):
+    self.the_clients = []
+    self.hostname = hostname
+    cert_location = os.getcwd() + '/certs/'
+    self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    self.context.load_cert_chain(certfile=cert_location + 'domain.crt',
+                                 keyfile=cert_location + 'domain.key')
+    self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    multiprocessing.Process.__init__(self)
+\end{verbatim}
+
+Dalam modifikasi ini, pertama-tama mendefinisikan lokasi sertifikat SSL dengan variabel cert location. Kemudian, membuat konteks SSL dengan ssl.SSLContext(ssl.PROTOCOL\_TLS\_SERVE\\R) dan memuat sertifikat dan kunci pribadi dengan self.context.load\_cert\_chain(). Selanjutnya, membuat socket dan mengatur opsi socket untuk mengizinkan penggunaan kembali alamat. Terakhir, memanggil konstruktor kelas induk multiprocessing.Process.
+
+Selanjutnya, pada semua kode, dhilangkan beberapa overhead seperti print/mencetak log seluruh isi direktori/folder untuk mempercepat proses.
+
 
 
 \newpage
@@ -142,11 +161,8 @@ Process + Not Secure &  &  &  &  &  \\
 \subsection{Diagram Arsitektur}
 % Sertakan diagram yang menggambarkan pengaturan eksperimen Anda.
 
+\newpage
 \section{Kesimpulan}
 % Rangkum temuan utama Anda dan buat kesimpulan tentang kinerja relatif dari berbagai konfigurasi server web.
 
 \end{document}
-
-
-server_multiprocessing_http
-server_multiprocessing_http_secure
