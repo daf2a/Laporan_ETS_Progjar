@@ -10,3 +10,5 @@
 *.bcf
 *.xml
 *.synctex*
+*.toc
+*.bib
