@@ -69,7 +69,7 @@ Tujuan utama dari evaluasi ini adalah:
     \item \textbf{Memberikan Rekomendasi:} Berdasarkan hasil evaluasi, memberikan rekomendasi tentang model konkurensi yang paling sesuai untuk berbagai skenario penggunaan server web.
 \end{enumerate}
 
-Evaluasi ini menggunakan Apache Benchmark (`ab`) untuk menghasilkan beban kerja yang realistis dan mengumpulkan metrik kinerja yang relevan. Laporan ini akan menyajikan hasil pengujian secara rinci, menganalisis temuan, dan memberikan kesimpulan yang bermanfaat bagi pengembangan server web yang efisien dan skalabel.
+Evaluasi ini menggunakan Siege untuk menghasilkan beban kerja yang realistis dan mengumpulkan metrik kinerja yang relevan.
 
 \subsection{Repositori Kode}
 
@@ -106,28 +106,25 @@ Server web dijalankan pada mesin virtual ini. Pengujian kinerja dilakukan dari m
 \label{fig:arch}
 \end{figure}
 
-Gambar \ref{fig:arch} mengilustrasikan arsitektur percobaan. Mesin penguji (client) dan mesin yang menjalankan server web (virtual machine) terhubung ke jaringan lokal yang sama. Pengujian kinerja dilakukan dengan mengirimkan permintaan HTTP ke server web menggunakan Apache Benchmark (`ab`). 
+Gambar \ref{fig:arch} mengilustrasikan arsitektur percobaan. Mesin penguji (client) dan mesin yang menjalankan server web (virtual machine) terhubung ke jaringan lokal yang sama. Pengujian kinerja dilakukan dengan mengirimkan permintaan HTTP ke server web menggunakan Siege.
 
 \subsection{Pengukuran Kinerja}
 
-Pengukuran kinerja dilakukan menggunakan \textit{Apache Benchmark} (`ab`), sebuah alat yang dirancang untuk menguji kinerja server HTTP. Alat ini menghasilkan beban kerja dengan mengirimkan sejumlah permintaan HTTP ke server dan mengukur berbagai metrik kinerja. 
+Pengukuran kinerja dilakukan menggunakan \texttt{Siege}, alat pengujian HTTP yang digunakan untuk mensimulasikan banyak pengguna yang mengakses server secara bersamaan.
 
 \subsubsection{Parameter Pengujian}
 
-Pengujian dilakukan dengan mengirimkan 1000 permintaan (`-n 1000`) pada setiap iterasi. Tingkat konkurensi (jumlah permintaan yang dikirim secara bersamaan) divariasikan untuk melihat bagaimana kinerja server berubah seiring dengan meningkatnya beban. Tingkat konkurensi yang digunakan adalah 10, 50, 100, 150, dan 200 (`-c 10`, `-c 50`, dst.).
+Pengujian dilakukan dengan durasi 30 detik (`-t 30S`) pada setiap iterasi. Tingkat konkurensi (jumlah pengguna virtual yang mengakses server secara bersamaan) divariasikan untuk melihat bagaimana kinerja server berubah seiring dengan meningkatnya beban. Tingkat konkurensi yang digunakan adalah 10, 50, 100, 150, dan 200 (`-c 10`, `-c 50`, dst.).
 
 \subsubsection{Perintah yang Digunakan}
 
-Perintah dasar yang digunakan untuk menjalankan pengujian adalah sebagai berikut:
+Perintah dasar yang digunakan untuk menjalankan pengujian HTTP adalah sebagai berikut:
 
-\begin{verbatim}
-ab -n 1000 -c [TINGKAT_KONKURENSI] http://[ALAMAT_IP_SERVER]:8889/
-ab -n 1000 -c 10 http://172.18.0.4:8889/
-ab -n 1000 -c 50 http://172.18.0.4:8889/
-ab -n 1000 -c 100 http://172.18.0.4:8889/
-ab -n 1000 -c 150 http://172.18.0.4:8889/
-ab -n 1000 -c 200 http://172.18.0.4:8889/
-\end{verbatim}
+\texttt{siege -c [TINGKAT\_KONKURENSI] -t 30S http://[ALAMAT\_IP\_SERVER]:8889/}
+\\ \\
+Sedangkan perintah untuk HTTPS sebagai berikut:
+
+\texttt{siege -c [TINGKAT\_KONKURENSI] -t 30S https://[ALAMAT\_IP\_SERVER]:8443/}
 
 \subsection{Modifikasi Kode Sumber}
 
@@ -148,29 +145,29 @@ Berikut adalah hasil pengujian kinerja untuk server web dengan model konkurensi 
     \begin{tabular}{c|ccccc}
     \hline
     \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
-    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
-    \hline 
-    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transactions} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (Mb/s)} \\
+    \hline
+    10 & 0 & 155 & 5.19 & 1840 & 0.00 \\
+    50 & 0 & 144 & 4.96 & 3990 & 0.00 \\
+    100 & 1 & 122 & 4.13 & 5040 & 0.00 \\
+    150 & 2 & 106 & 3.64 & 5540 & 0.00 \\
+    200 & 0 & 111 & 3.75 & 5800 & 0.00 \\
     \hline
     \end{tabular}
     \end{table}
-    
+
     \begin{table}[h!]
     \label{tab:thread_secure_performance_2}
     \begin{tabular}{c|cccc}
     \hline
-    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
-    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
-    \hline 
-    10 & 0 & 0 & 0 & 0 \\
-    50 & 0 & 0 & 0 & 0 \\
-    100 & 0 & 0 & 0 & 0 \\
-    150 & 0 & 0 & 0 & 0 \\
-    200 & 0 & 0 & 0 & 0 \\
+    \textbf{Concurrency} & \textbf{Longest} & \textbf{Shortest} & \textbf{Throughput} & \textbf{Total} \\
+    \textbf{Level} & \textbf{Transactions (ms)} & \textbf{Transactions (ms)} & \textbf{} & \textbf{Time (ms)} \\
+    \hline
+    10 & 8.94 & 0.49 & 0.00 & 29840 \\
+    50 & 24.85 & 0.45 & 0.00 & 29020 \\
+    100 & 18.85 & 0.00 & 0.00 & 29510 \\
+    150 & 19.86 & 0.00 & 0.00 & 29120 \\
+    200 & 19.43 & 0.00 & 0.00 & 29610 \\
     \hline
     \end{tabular}
     \end{table}
@@ -182,13 +179,13 @@ Berikut adalah hasil pengujian kinerja untuk server web dengan model konkurensi 
     \begin{tabular}{c|ccccc}
     \hline
     \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
-    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
-    \hline 
-    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transactions} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (Mb/s)} \\
+    \hline
+    10 & 0 & 345 & 11.60 & 750 & 0.34 \\
+    50 & 0 & 138 & 4.66 & 3870 & 0.00 \\
+    100 & 0 & 83 & 2.83 & 7960 & 0.00 \\
+    150 & 0 & 43 & 1.44 & 4840 & 0.00 \\
+    200 & 0 & 65 & 2.19 & 5190 & 0.00 \\
     \hline
     \end{tabular}
     \end{table}
@@ -197,14 +194,14 @@ Berikut adalah hasil pengujian kinerja untuk server web dengan model konkurensi 
     \label{tab:thread_secure_performance_2}
     \begin{tabular}{c|cccc}
     \hline
-    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
-    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
-    \hline 
-    10 & 0 & 0 & 0 & 0 \\
-    50 & 0 & 0 & 0 & 0 \\
-    100 & 0 & 0 & 0 & 0 \\
-    150 & 0 & 0 & 0 & 0 \\
-    200 & 0 & 0 & 0 & 0 \\
+    \textbf{Concurrency} & \textbf{Longest} & \textbf{Shortest} & \textbf{Throughput} & \textbf{Total} \\
+    \textbf{Level} & \textbf{Transactions (ms)} & \textbf{Transactions (ms)} & \textbf{} & \textbf{Time (ms)} \\
+    \hline
+    10 & 8.47 & 0.02 & 0.00 & 29750 \\
+    50 & 18.02 & 0.00 & 0.00 & 29620 \\
+    100 & 25.62 & 0.00 & 0.00 & 29330 \\
+    150 & 18.24 & 0.00 & 0.00 & 29790 \\
+    200 & 17.88 & 0.00 & 0.00 & 29640 \\
     \hline
     \end{tabular}
     \end{table}
@@ -216,47 +213,47 @@ Berikut adalah hasil pengujian kinerja untuk server web dengan model konkurensi 
     \begin{tabular}{c|ccccc}
     \hline
     \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
-    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
-    \hline 
-    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transactions} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (Mb/s)} \\
+    \hline
+    10 & 0 & 149 & 4.98 & 1930 & 0.00 \\
+    50 & 0 & 129 & 4.38 & 9050 & 0.00 \\
+    100 & 0 & 119 & 4.00 & 14140 & 0.00 \\
+    150 & 0 & 34 & 1.14 & 25260 & 0.00 \\
+    200 & 0 & 96 & 3.30 & 16420 & 0.00 \\
     \hline
     \end{tabular}
     \end{table}
     
-    \begin{table}[h!]
+\begin{table}[h!]
     \label{tab:thread_secure_performance_2}
     \begin{tabular}{c|cccc}
     \hline
-    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
-    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
-    \hline 
-    10 & 0 & 0 & 0 & 0 \\
-    50 & 0 & 0 & 0 & 0 \\
-    100 & 0 & 0 & 0 & 0 \\
-    150 & 0 & 0 & 0 & 0 \\
-    200 & 0 & 0 & 0 & 0 \\
+    \textbf{Concurrency} & \textbf{Longest} & \textbf{Shortest} & \textbf{Throughput} & \textbf{Total} \\
+    \textbf{Level} & \textbf{Transactions (ms)} & \textbf{Transactions (ms)} & \textbf{} & \textbf{Time (ms)} \\
+    \hline
+    10 & 4.41 & 0.41 & 0.00 & 29940 \\
+    50 & 12.88 & 0.87 & 0.00 & 29430 \\
+    100 & 25.08 & 1.59 & 0.00 & 29730 \\
+    150 & 29.64 & 0.00 & 0.00 & 29950 \\
+    200 & 28.97 & 0.00 & 0.00 & 29100 \\
     \hline
     \end{tabular}
     \end{table}
 
-\begin{table}[h!]
+    \begin{table}[h!]
     \captionsetup{justification=raggedright,singlelinecheck=false}
     \caption{Kinerja Server Web (\textbf{Process Secure})}
     \label{tab:thread_secure_performance_1}
     \begin{tabular}{c|ccccc}
     \hline
     \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
-    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
-    \hline 
-    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
-    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transactions} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (Mb/s)} \\
+    \hline
+    10 & 0 & 345 & 11.60 & 750 & 0.34 \\
+    50 & 0 & 138 & 4.66 & 3870 & 0.00 \\
+    100 & 0 & 83 & 2.83 & 7960 & 0.00 \\
+    150 & 0 & 43 & 1.44 & 4840 & 0.00 \\
+    200 & 0 & 65 & 2.19 & 5190 & 0.00 \\
     \hline
     \end{tabular}
     \end{table}
@@ -265,14 +262,14 @@ Berikut adalah hasil pengujian kinerja untuk server web dengan model konkurensi 
     \label{tab:thread_secure_performance_2}
     \begin{tabular}{c|cccc}
     \hline
-    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
-    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
-    \hline 
-    10 & 0 & 0 & 0 & 0 \\
-    50 & 0 & 0 & 0 & 0 \\
-    100 & 0 & 0 & 0 & 0 \\
-    150 & 0 & 0 & 0 & 0 \\
-    200 & 0 & 0 & 0 & 0 \\
+    \textbf{Concurrency} & \textbf{Longest} & \textbf{Shortest} & \textbf{Throughput} & \textbf{Total} \\
+    \textbf{Level} & \textbf{Transactions (ms)} & \textbf{Transactions (ms)} & \textbf{} & \textbf{Time (ms)} \\
+    \hline
+    10 & 8.47 & 0.02 & 0.00 & 29750 \\
+    50 & 18.02 & 0.00 & 0.00 & 29620 \\
+    100 & 25.62 & 0.00 & 0.00 & 29330 \\
+    150 & 18.24 & 0.00 & 0.00 & 29790 \\
+    200 & 17.88 & 0.00 & 0.00 & 29640 \\
     \hline
     \end{tabular}
     \end{table}

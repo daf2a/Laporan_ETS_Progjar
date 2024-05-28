@@ -1,0 +1,79 @@
+(base) jovyan@3b89d2ef76a1:~/work$ siege -c 10 -t 30S https://172.18.0.4:8443/
+
+{       "transactions":                          345,
+        "availability":                       100.00,
+        "elapsed_time":                        29.75,
+        "data_transferred":                     0.01,
+        "response_time":                        0.75,
+        "transaction_rate":                    11.60,
+        "throughput":                           0.00,
+        "concurrency":                          8.74,
+        "successful_transactions":               345,
+        "failed_transactions":                     0,
+        "longest_transaction":                  8.47,
+        "shortest_transaction":                 0.02
+}
+
+(base) jovyan@3b89d2ef76a1:~/work$ siege -c 50 -t 30S https://172.18.0.4:8443/
+
+{       "transactions":                          138,
+        "availability":                       100.00,
+        "elapsed_time":                        29.62,
+        "data_transferred":                     0.00,
+        "response_time":                        3.87,
+        "transaction_rate":                     4.66,
+        "throughput":                           0.00,
+        "concurrency":                         18.02,
+        "successful_transactions":               138,
+        "failed_transactions":                     0,
+        "longest_transaction":                 18.02,
+        "shortest_transaction":                 0.00
+}
+
+(base) jovyan@3b89d2ef76a1:~/work$ siege -c 100 -t 30S https://172.18.0.4:8443/
+
+{       "transactions":                           83,
+        "availability":                       100.00,
+        "elapsed_time":                        29.33,
+        "data_transferred":                     0.00,
+        "response_time":                        7.96,
+        "transaction_rate":                     2.83,
+        "throughput":                           0.00,
+        "concurrency":                         22.53,
+        "successful_transactions":                83,
+        "failed_transactions":                     0,
+        "longest_transaction":                 25.62,
+        "shortest_transaction":                 0.00
+}
+
+(base) jovyan@3b89d2ef76a1:~/work$ siege -c 150 -t 30S https://172.18.0.4:8443/
+
+{       "transactions":                           43,
+        "availability":                       100.00,
+        "elapsed_time":                        29.79,
+        "data_transferred":                     0.00,
+        "response_time":                        4.84,
+        "transaction_rate":                     1.44,
+        "throughput":                           0.00,
+        "concurrency":                          6.99,
+        "successful_transactions":                43,
+        "failed_transactions":                     0,
+        "longest_transaction":                 18.24,
+        "shortest_transaction":                 0.00
+}
+
+(base) jovyan@3b89d2ef76a1:~/work$ siege -c 200 -t 30S https://172.18.0.4:8443/
+
+{       "transactions":                           65,
+        "availability":                       100.00,
+        "elapsed_time":                        29.64,
+        "data_transferred":                     0.00,
+        "response_time":                        5.19,
+        "transaction_rate":                     2.19,
+        "throughput":                           0.00,
+        "concurrency":                         11.37,
+        "successful_transactions":                65,
+        "failed_transactions":                     0,
+        "longest_transaction":                 17.88,
+        "shortest_transaction":                 0.00
+}
