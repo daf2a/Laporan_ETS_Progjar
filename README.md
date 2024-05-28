@@ -1,6 +1,9 @@
-# Laporan ETS Progjar 5025211015
+# Laporan ETS Progjar 
 
-Repositori ini berisi laporan untuk ETS Progjar dengan nomor 5025211015. Laporan ini dibuat menggunakan LaTeX dan dihosting di GitHub Pages.
+Repositori ini berisi laporan untuk ETS Progjar dibuat menggunakan LaTeX.
+
+## Penulis
+Muhammad Daffa Ashdaqfillah (5025211015)
 
 ## Laporan PDF
 Laporan dapat diakses melalui link berikut:
