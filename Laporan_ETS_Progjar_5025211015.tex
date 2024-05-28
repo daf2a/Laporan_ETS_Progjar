@@ -151,19 +151,150 @@ Selanjutnya, pada semua kode, dhilangkan beberapa overhead seperti print/menceta
 \section{Hasil dan Analisis}
 \subsection{Perbandingan Kinerja}
 % Sajikan data kinerja Anda dalam format tabel, seperti yang diminta.
-\begin{table}[h!]
-\centering
-\caption{Tabel Perbandingan Kinerja Web Server}
-\begin{tabular}{l|ccccc}
-\textbf{Jumlah Concurrency} & \textbf{Permintaan Gagal} & \textbf{Total Transfer} & \textbf{Permintaan/Detik} & \textbf{Waktu/Permintaan} & \textbf{Laju Transfer} \\ \hline
-Thread + Secure &  &  &  &  &  \\
-Thread + Not Secure &  &  &  &  &  \\
-Process + Secure &  &  &  &  &  \\
-Process + Not Secure &  &  &  &  &  \\
-\end{tabular}
-\end{table}
+Berikut adalah hasil pengujian kinerja untuk server web dengan model konkurensi \textit{multithreading} dan \textit{multiprocessing} dalam versi standar dan \textit{secure}.
 
+\begin{table}[h!]
+    \captionsetup{justification=raggedright,singlelinecheck=false}
+    \caption{Kinerja Server Web (\textbf{Thread non Secure})}
+    \label{tab:thread_secure_performance_1}
+    \begin{tabular}{c|ccccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
+    \hline 
+    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    \begin{table}[h!]
+    \label{tab:thread_secure_performance_2}
+    \begin{tabular}{c|cccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
+    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
+    \hline 
+    10 & 0 & 0 & 0 & 0 \\
+    50 & 0 & 0 & 0 & 0 \\
+    100 & 0 & 0 & 0 & 0 \\
+    150 & 0 & 0 & 0 & 0 \\
+    200 & 0 & 0 & 0 & 0 \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+\begin{table}[h!]
+    \captionsetup{justification=raggedright,singlelinecheck=false}
+    \caption{Kinerja Server Web (\textbf{Thread Secure})}
+    \label{tab:thread_secure_performance_1}
+    \begin{tabular}{c|ccccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
+    \hline 
+    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    \begin{table}[h!]
+    \label{tab:thread_secure_performance_2}
+    \begin{tabular}{c|cccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
+    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
+    \hline 
+    10 & 0 & 0 & 0 & 0 \\
+    50 & 0 & 0 & 0 & 0 \\
+    100 & 0 & 0 & 0 & 0 \\
+    150 & 0 & 0 & 0 & 0 \\
+    200 & 0 & 0 & 0 & 0 \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+\begin{table}[h!]
+    \captionsetup{justification=raggedright,singlelinecheck=false}
+    \caption{Kinerja Server Web (\textbf{Process non Secure})}
+    \label{tab:thread_secure_performance_1}
+    \begin{tabular}{c|ccccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
+    \hline 
+    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    \begin{table}[h!]
+    \label{tab:thread_secure_performance_2}
+    \begin{tabular}{c|cccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
+    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
+    \hline 
+    10 & 0 & 0 & 0 & 0 \\
+    50 & 0 & 0 & 0 & 0 \\
+    100 & 0 & 0 & 0 & 0 \\
+    150 & 0 & 0 & 0 & 0 \\
+    200 & 0 & 0 & 0 & 0 \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+\begin{table}[h!]
+    \captionsetup{justification=raggedright,singlelinecheck=false}
+    \caption{Kinerja Server Web (\textbf{Process Secure})}
+    \label{tab:thread_secure_performance_1}
+    \begin{tabular}{c|ccccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Failed} & \textbf{Total} & \textbf{Requests} & \textbf{Time/Request} & \textbf{Transfer} \\
+    \textbf{Level} & \textbf{Requests} & \textbf{Transfer (MB)} & \textbf{/s} & \textbf{(ms)} & \textbf{Rate (kb/s)} \\
+    \hline 
+    10 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    50 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    100 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    150 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    200 & 0 & 1000 & 1000 & 0.000 & 0.0  \\
+    \hline
+    \end{tabular}
+    \end{table}
+    
+    \begin{table}[h!]
+    \label{tab:thread_secure_performance_2}
+    \begin{tabular}{c|cccc}
+    \hline
+    \textbf{Concurrency} & \textbf{Connect} & \textbf{Processing} & \textbf{Waiting} & \textbf{Total} \\
+    \textbf{Level} & \textbf{(ms)} & \textbf{(ms)} & \textbf{(ms)} & \textbf{Time (ms)} \\
+    \hline 
+    10 & 0 & 0 & 0 & 0 \\
+    50 & 0 & 0 & 0 & 0 \\
+    100 & 0 & 0 & 0 & 0 \\
+    150 & 0 & 0 & 0 & 0 \\
+    200 & 0 & 0 & 0 & 0 \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+
+\newpage
 \subsection{Analisis Hasil}
+% Analisis hasil pengujian Anda, fokus pada perbandingan kinerja antara model konkurensi dan keamanan yang berbeda.
+Dari hasil pengujian yang dilakukan, dapat dilihat bahwa kinerja server web berbeda tergantung pada model konkurensi yang digunakan. Berikut adalah analisis utama dari hasil pengujian:
+
 
 \newpage
 \section{Kesimpulan}
